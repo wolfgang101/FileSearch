@@ -8,8 +8,6 @@ To run :
 
 -->Import project folder in IntelliJ Idea.
    Run Main.java as main class.
-   
-                  OR
                   
 -->Navigate to out/production/foogle/
    Run java com.foogle.Main in terminal/powershell.
