@@ -101,6 +101,11 @@ public class Main {
                 Scanner in = new Scanner(System.in);
                 System.out.println("Enter Title : ");
                 String title = in.nextLine();
+                File file = new File(title+".txt");
+                if(file.exists()){
+                    System.out.println("Article With Title Already Exists!");
+                    return;
+                }
                 fileHandler fhand = new fileHandler(title+".txt");
                 System.out.println("Enter Author : ");
                 String author = in.nextLine();
