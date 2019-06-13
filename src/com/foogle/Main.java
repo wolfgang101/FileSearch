@@ -1,22 +1,20 @@
 package com.foogle;
 
-import javafx.concurrent.Task;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.ArrayList;
+
 import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 public class Main {
+    public static int resultcount=0;
     public static final int MAX = 15;
     public static final String ANSI_RESET = "\u001B[0m";
     public static final String ANSI_BLACK = "\u001B[30m";
@@ -55,7 +53,7 @@ public class Main {
                     System.out.println("3. Search Articles By Title");
                     System.out.println("4. Search Articles By Author");
                     System.out.println("5. Search Articles Using PhraseSearch");
-                    System.out.println("6. Exit\n\n");
+                    System.out.println("6. Exit\n");
                     try {
                         choice = Integer.parseInt(br.readLine());
                     }
@@ -136,10 +134,11 @@ public class Main {
                 fileHandler fhand = new fileHandler(title+".txt");
                 int i = fhand.delFile();
                 if(i==0){
+                    fhand.delauthorIndex(title);
                     System.out.println("Article Deleted\n");
                 }
                 else if(i==1){
-                    System.err.println("Article Doesn't Exitst!");
+                    System.err.println("Article Doesn't Exist!");
                 }
                 else{
                     System.out.println("Article Deletion Failed, Please Try Again!");
@@ -171,6 +170,7 @@ public class Main {
             }
 
             public static void searchPhrase(){
+                resultcount=0;
                 Scanner in = new Scanner(System.in);
                 System.out.println("Search Phrase : ");
                 String pattern = in.nextLine();
@@ -197,8 +197,14 @@ public class Main {
                 catch (Exception ex){
                     System.out.println("Thread Interruped!");
                 }
-                Instant finish = Instant.now();
-                System.out.println("\nResults Found in "+Duration.between(start, finish).toMillis()+"ms");
+                if(resultcount==0){
+                    System.err.println("\nNo Files Found With Pattern : "+pattern);
+                    return;
+                }
+                else {
+                    Instant finish = Instant.now();
+                    System.out.println("\nResults Found in " + Duration.between(start, finish).toMillis() + " ms");
+                }
                 if(pool.isTerminated()){
                     return;
                 }
@@ -220,7 +226,7 @@ public class Main {
                     System.out.println(ANSI_YELLOW+iterator+ANSI_BLACK);
                 }
                 Instant finish = Instant.now();
-                System.out.println("\nResults Found in "+Duration.between(start, finish).toMillis()+"ms");
+                System.out.println("\nResults Found in "+Duration.between(start, finish).toMillis()+" ms");
                 return;
             }
     }

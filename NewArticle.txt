@@ -1,0 +1,7 @@
+NewArticle
+
+This is a 
+new Article
+written by me
+
+Mantu

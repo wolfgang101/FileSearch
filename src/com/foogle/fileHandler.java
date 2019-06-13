@@ -1,11 +1,17 @@
 package com.foogle;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 public class fileHandler {
+    public static final String ANSI_CYAN = "\u001B[36m";
+    public static final String ANSI_YELLOW = "\u001B[33m";
+    public static final String ANSI_BLACK = "\u001B[30m";
     String filename = "";
     BufferedReader in;
     PrintWriter out;
@@ -87,11 +93,11 @@ public class fileHandler {
                 line = in.readLine();
             }
             String title = str.substring(0,str.indexOf("\n"));
-            System.out.println("\nTitle :"+title);
-            System.out.println("Author : "+author+"\n");
+            System.out.println(ANSI_CYAN+"\nTitle : "+ANSI_YELLOW+title+ANSI_BLACK);
+            System.out.println(ANSI_CYAN+"Author : "+ANSI_YELLOW+author+ANSI_BLACK+"\n");
             String body = str.substring(str.indexOf("\n"),str.indexOf(author));
             body = body.trim();
-            System.out.println(body);
+            System.out.println(ANSI_YELLOW+body+ANSI_BLACK);
             add = new article(title, author, body);
             return add;
         }
@@ -215,6 +221,20 @@ public class fileHandler {
         }
     }
 
+    public void delauthorIndex(String title){
+        try{
+
+            File file = new File("authorIndex.index");
+            List<String> out = Files.lines(file.toPath())
+                    .filter(line -> !line.contains(title))
+                    .collect(Collectors.toList());
+            Files.write(file.toPath(), out, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
+        }
+        catch(IOException ex){
+            System.err.println("Error Opening File : "+filename+" "+ex);
+        }
+    }
+
     public List<String> getAuthorArticles(String author){
         try{
             List<String> fileList = new ArrayList<String>();
@@ -250,14 +270,7 @@ public class fileHandler {
 
 
     public static void main(String args[]){
-        //Scanner scan = new Scanner(System.in);
-        fileHandler fh = new fileHandler("lol.txt");
-        //System.out.println("Enter text : ");
-        //String str = scan.nextLine();
-        //System.out.println("Writing Text: "+str);
-        //fh.writeFile(str);
-        //System.out.println("Done Writing");
-        //System.out.println(fh.getLine("lmao"));
+        fileHandler fh = new fileHandler("Random.txt");
         File f[] = fh.getFiles();
         for(int i=0;i<f.length;i++){
             System.out.println(f[i].getName()+" "+f[i].getAbsolutePath());
